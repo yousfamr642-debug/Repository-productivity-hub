@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -23,25 +24,63 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         header {
-            text-align: center;
-            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
-        header h1 {
+        .header-left h1 {
+            color: white;
             font-size: 2.5em;
-            margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
         }
 
-        header p {
-            font-size: 1.1em;
-            opacity: 0.9;
+        .header-left p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1em;
+        }
+
+        .user-profile {
+            background: rgba(255,255,255,0.95);
+            padding: 15px 25px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .user-info h3 {
+            color: #333;
+            font-size: 1em;
+            margin-bottom: 3px;
+        }
+
+        .user-info p {
+            color: #999;
+            font-size: 0.85em;
         }
 
         .nav-tabs {
@@ -110,6 +149,7 @@
             gap: 15px;
             justify-content: center;
             margin: 30px 0;
+            flex-wrap: wrap;
         }
 
         .timer-buttons button {
@@ -129,11 +169,6 @@
             transform: translateY(-2px);
         }
 
-        .timer-buttons button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
         .timer-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -142,21 +177,21 @@
         }
 
         .stat-card {
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             padding: 20px;
             border-radius: 10px;
             text-align: center;
         }
 
         .stat-card h3 {
-            color: #667eea;
-            font-size: 1.5em;
+            font-size: 1.8em;
             margin-bottom: 5px;
         }
 
         .stat-card p {
-            color: #666;
             font-size: 0.9em;
+            opacity: 0.9;
         }
 
         /* Todo List */
@@ -164,23 +199,21 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
-        .todo-input-group input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1em;
-            font-family: 'Cairo', sans-serif;
-        }
-
+        .todo-input-group input,
         .todo-input-group select {
             padding: 12px;
             border: 2px solid #ddd;
             border-radius: 10px;
             font-size: 1em;
             font-family: 'Cairo', sans-serif;
+        }
+
+        .todo-input-group input {
+            flex: 1;
+            min-width: 200px;
         }
 
         .todo-input-group button {
@@ -303,6 +336,7 @@
             cursor: pointer;
             font-family: 'Cairo', sans-serif;
             transition: all 0.3s ease;
+            margin: 5px;
         }
 
         .habit-card button:hover {
@@ -334,103 +368,30 @@
             font-family: 'Cairo', sans-serif;
         }
 
-        /* Time Tracker */
-        .time-tracker-form {
+        /* Charts */
+        .charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
             margin-bottom: 30px;
         }
 
-        .time-tracker-form input {
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1em;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        .time-tracker-form button {
-            padding: 12px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        .time-entries {
-            list-style: none;
-        }
-
-        .time-entry {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
+        .chart-container {
             background: #f9f9f9;
-            border-radius: 10px;
-            margin-bottom: 10px;
+            padding: 20px;
+            border-radius: 15px;
+            position: relative;
+            height: 400px;
         }
 
-        .time-entry-info h4 {
-            margin-bottom: 5px;
+        .chart-container h3 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
         }
 
-        .time-entry-duration {
-            font-size: 1.5em;
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        /* Reminders */
-        .reminders-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .reminders-form input,
-        .reminders-form textarea {
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1em;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        .reminders-form button {
-            padding: 12px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        .reminders-list {
-            list-style: none;
-        }
-
-        .reminder-item {
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border-right: 4px solid #667eea;
-        }
-
-        .reminder-item h4 {
-            margin-bottom: 5px;
-        }
-
-        .reminder-time {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 10px;
+        canvas {
+            max-height: 350px;
         }
 
         /* Statistics */
@@ -450,7 +411,7 @@
         }
 
         .stats-box h3 {
-            font-size: 2em;
+            font-size: 2.5em;
             margin-bottom: 10px;
         }
 
@@ -459,16 +420,36 @@
             opacity: 0.9;
         }
 
-        .chart-container {
+        .advanced-stats {
             background: #f9f9f9;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 15px;
             margin-bottom: 20px;
         }
 
-        .chart-container h3 {
+        .advanced-stats h3 {
             margin-bottom: 15px;
             color: #333;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #666;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #667eea;
         }
 
         .empty-state {
@@ -483,6 +464,11 @@
         }
 
         @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
             header h1 {
                 font-size: 1.8em;
             }
@@ -498,23 +484,35 @@
             .nav-tabs button {
                 width: 100%;
             }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🎯 مركز الإنتاجية</h1>
-            <p>أداة شاملة لتنظيم وقتك وزيادة إنتاجيتك</p>
+            <div class="header-left">
+                <h1>🎯 مركز الإنتاجية</h1>
+                <p>أداة شاملة لتنظيم وقتك وزيادة إنتاجيتك</p>
+            </div>
+            <div class="user-profile">
+                <div class="user-avatar">جـ</div>
+                <div class="user-info">
+                    <h3>جوهاه Y A</h3>
+                    <p>مستخدم نشط</p>
+                </div>
+            </div>
         </header>
 
         <div class="nav-tabs">
             <button class="tab-btn active" onclick="switchTab('pomodoro')">⏱️ مؤقت بومودورو</button>
             <button class="tab-btn" onclick="switchTab('todos')">✅ قائمة المهام</button>
             <button class="tab-btn" onclick="switchTab('habits')">🔄 تتبع العادات</button>
-            <button class="tab-btn" onclick="switchTab('timetracker')">⏰ قياس الوقت</button>
-            <button class="tab-btn" onclick="switchTab('reminders')">🔔 التذكيرات</button>
-            <button class="tab-btn" onclick="switchTab('stats')">📊 الإحصائيات</button>
+            <button class="tab-btn" onclick="switchTab('reports')">📊 التقارير والرسوم</button>
+            <button class="tab-btn" onclick="switchTab('stats')">📈 الإحصائيات</button>
         </div>
 
         <!-- Pomodoro Timer -->
@@ -576,39 +574,32 @@
             </div>
         </div>
 
-        <!-- Time Tracker -->
-        <div id="timetracker" class="content">
-            <h2>قياس الوقت</h2>
-            <div class="time-tracker-form">
-                <input type="text" id="taskName" placeholder="اسم المهمة...">
-                <input type="number" id="hours" placeholder="الساعات" min="0" max="24">
-                <input type="number" id="minutes" placeholder="الدقائق" min="0" max="59">
-                <button onclick="addTimeEntry()">تسجيل الوقت</button>
-            </div>
-            <ul class="time-entries" id="timeEntries"></ul>
-            <div id="emptyTime" class="empty-state">
-                <p>لم تسجل أي أوقات بعد.</p>
-            </div>
-        </div>
-
-        <!-- Reminders -->
-        <div id="reminders" class="content">
-            <h2>التذكيرات</h2>
-            <div class="reminders-form">
-                <input type="text" id="reminderTitle" placeholder="عنوان التذكير...">
-                <textarea id="reminderDesc" placeholder="وصف التذكير..." rows="3"></textarea>
-                <input type="datetime-local" id="reminderTime">
-                <button onclick="addReminder()">إضافة تذكير</button>
-            </div>
-            <ul class="reminders-list" id="remindersList"></ul>
-            <div id="emptyReminders" class="empty-state">
-                <p>لا توجد تذكيرات حالياً.</p>
+        <!-- Reports and Charts -->
+        <div id="reports" class="content">
+            <h2>التقارير والرسوم البيانية</h2>
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3>توزيع المهام حسب الأولوية</h3>
+                    <canvas id="priorityChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>تقدم المهام</h3>
+                    <canvas id="progressChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>جلسات بومودورو</h3>
+                    <canvas id="pomodoroChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>أداء العادات</h3>
+                    <canvas id="habitsChart"></canvas>
+                </div>
             </div>
         </div>
 
         <!-- Statistics -->
         <div id="stats" class="content">
-            <h2>الإحصائيات والتقارير</h2>
+            <h2>الإحصائيات والتقارير الشاملة</h2>
             <div class="stats-grid">
                 <div class="stats-box">
                     <h3 id="totalTodos">0</h3>
@@ -623,27 +614,46 @@
                     <p>إجمالي العادات</p>
                 </div>
                 <div class="stats-box">
-                    <h3 id="totalTimeLogged">0</h3>
-                    <p>إجمالي الوقت المسجل</p>
+                    <h3 id="completionRate">0%</h3>
+                    <p>معدل الإكمال</p>
                 </div>
             </div>
-            <div class="chart-container">
-                <h3>ملخص الأداء</h3>
-                <p style="color: #666; margin-bottom: 15px;">إحصائيات شاملة عن إنتاجيتك</p>
-                <div id="performanceSummary">
-                    <p>قم بإضافة مهام وعادات لرؤية إحصائياتك هنا</p>
+
+            <div class="advanced-stats">
+                <h3>📊 ملخص الأداء المتقدم</h3>
+                <div class="stat-row">
+                    <span class="stat-label">معدل إكمال المهام:</span>
+                    <span class="stat-value" id="advCompletionRate">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">متوسط سلسلة العادات:</span>
+                    <span class="stat-value" id="avgHabitStreak">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">إجمالي جلسات بومودورو:</span>
+                    <span class="stat-value" id="totalSessions">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">إجمالي ساعات العمل:</span>
+                    <span class="stat-value" id="totalHours">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">أفضل يوم إنتاجية:</span>
+                    <span class="stat-value" id="bestDay">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">الأولوية الأكثر استخداماً:</span>
+                    <span class="stat-value" id="topPriority">-</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Data Storage
+        // Data Storage with Cloud Sync
         const data = {
             todos: JSON.parse(localStorage.getItem('todos')) || [],
             habits: JSON.parse(localStorage.getItem('habits')) || [],
-            timeEntries: JSON.parse(localStorage.getItem('timeEntries')) || [],
-            reminders: JSON.parse(localStorage.getItem('reminders')) || [],
             pomodoroStats: JSON.parse(localStorage.getItem('pomodoroStats')) || {
                 sessionsCompleted: 0,
                 totalMinutes: 0,
@@ -654,6 +664,7 @@
         let timerInterval = null;
         let timeLeft = 25 * 60;
         let isRunning = false;
+        let charts = {};
 
         // Tab Switching
         function switchTab(tabName) {
@@ -661,6 +672,10 @@
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
+            
+            if (tabName === 'reports') {
+                setTimeout(updateCharts, 100);
+            }
             updateStats();
         }
 
@@ -721,7 +736,8 @@
                     id: Date.now(),
                     text: input.value,
                     priority: priority,
-                    completed: false
+                    completed: false,
+                    createdAt: new Date().toISOString()
                 });
                 saveTodos();
                 renderTodos();
@@ -735,6 +751,7 @@
                 todo.completed = !todo.completed;
                 saveTodos();
                 renderTodos();
+                updateStats();
             }
         }
 
@@ -791,7 +808,8 @@
                     id: Date.now(),
                     name: input.value,
                     streak: 0,
-                    lastCompleted: null
+                    lastCompleted: null,
+                    completedDates: []
                 });
                 saveHabits();
                 renderHabits();
@@ -802,10 +820,15 @@
         function completeHabit(id) {
             const habit = data.habits.find(h => h.id === id);
             if (habit) {
-                habit.streak++;
-                habit.lastCompleted = new Date().toLocaleDateString('ar-SA');
-                saveHabits();
-                renderHabits();
+                const today = new Date().toLocaleDateString('ar-SA');
+                if (!habit.completedDates.includes(today)) {
+                    habit.completedDates.push(today);
+                    habit.streak++;
+                    habit.lastCompleted = today;
+                    saveHabits();
+                    renderHabits();
+                    updateStats();
+                }
             }
         }
 
@@ -834,7 +857,7 @@
                     <div class="habit-streak">🔥 ${habit.streak}</div>
                     <p style="margin-bottom: 15px; font-size: 0.9em;">يوم متتالي</p>
                     <button onclick="completeHabit(${habit.id})">✓ أكملت اليوم</button>
-                    <button onclick="deleteHabit(${habit.id})" style="background: rgba(255,255,255,0.3); margin-top: 10px;">حذف</button>
+                    <button onclick="deleteHabit(${habit.id})" style="background: rgba(255,255,255,0.3);">حذف</button>
                 `;
                 grid.appendChild(card);
             });
@@ -844,176 +867,185 @@
             localStorage.setItem('habits', JSON.stringify(data.habits));
         }
 
-        // Time Tracker Functions
-        function addTimeEntry() {
-            const name = document.getElementById('taskName').value;
-            const hours = parseInt(document.getElementById('hours').value) || 0;
-            const minutes = parseInt(document.getElementById('minutes').value) || 0;
-
-            if (name.trim() && (hours > 0 || minutes > 0)) {
-                data.timeEntries.push({
-                    id: Date.now(),
-                    name: name,
-                    hours: hours,
-                    minutes: minutes,
-                    totalMinutes: hours * 60 + minutes,
-                    date: new Date().toLocaleDateString('ar-SA')
-                });
-                saveTimeEntries();
-                renderTimeEntries();
-                document.getElementById('taskName').value = '';
-                document.getElementById('hours').value = '';
-                document.getElementById('minutes').value = '';
-            }
+        // Charts Functions
+        function updateCharts() {
+            updatePriorityChart();
+            updateProgressChart();
+            updatePomodoroChart();
+            updateHabitsChart();
         }
 
-        function deleteTimeEntry(id) {
-            data.timeEntries = data.timeEntries.filter(t => t.id !== id);
-            saveTimeEntries();
-            renderTimeEntries();
-        }
+        function updatePriorityChart() {
+            const ctx = document.getElementById('priorityChart');
+            if (!ctx) return;
 
-        function renderTimeEntries() {
-            const list = document.getElementById('timeEntries');
-            const empty = document.getElementById('emptyTime');
-            list.innerHTML = '';
+            const highCount = data.todos.filter(t => t.priority === 'high').length;
+            const mediumCount = data.todos.filter(t => t.priority === 'medium').length;
+            const lowCount = data.todos.filter(t => t.priority === 'low').length;
 
-            if (data.timeEntries.length === 0) {
-                empty.style.display = 'block';
-                return;
-            }
-            empty.style.display = 'none';
-
-            data.timeEntries.forEach(entry => {
-                const li = document.createElement('li');
-                li.className = 'time-entry';
-                li.innerHTML = `
-                    <div class="time-entry-info">
-                        <h4>${entry.name}</h4>
-                        <p>${entry.date}</p>
-                    </div>
-                    <div style="display: flex; gap: 20px; align-items: center;">
-                        <div class="time-entry-duration">${entry.hours}:${String(entry.minutes).padStart(2, '0')}</div>
-                        <button class="todo-delete" onclick="deleteTimeEntry(${entry.id})">حذف</button>
-                    </div>
-                `;
-                list.appendChild(li);
+            if (charts.priority) charts.priority.destroy();
+            charts.priority = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['عالية', 'متوسطة', 'منخفضة'],
+                    datasets: [{
+                        data: [highCount, mediumCount, lowCount],
+                        backgroundColor: ['#ff6b6b', '#ffa500', '#51cf66']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { font: { family: "'Cairo', sans-serif" } }
+                        }
+                    }
+                }
             });
         }
 
-        function saveTimeEntries() {
-            localStorage.setItem('timeEntries', JSON.stringify(data.timeEntries));
-        }
+        function updateProgressChart() {
+            const ctx = document.getElementById('progressChart');
+            if (!ctx) return;
 
-        // Reminder Functions
-        function addReminder() {
-            const title = document.getElementById('reminderTitle').value;
-            const desc = document.getElementById('reminderDesc').value;
-            const time = document.getElementById('reminderTime').value;
+            const completed = data.todos.filter(t => t.completed).length;
+            const pending = data.todos.filter(t => !t.completed).length;
 
-            if (title.trim() && time) {
-                data.reminders.push({
-                    id: Date.now(),
-                    title: title,
-                    description: desc,
-                    time: time,
-                    completed: false
-                });
-                saveReminders();
-                renderReminders();
-                document.getElementById('reminderTitle').value = '';
-                document.getElementById('reminderDesc').value = '';
-                document.getElementById('reminderTime').value = '';
-            }
-        }
-
-        function deleteReminder(id) {
-            data.reminders = data.reminders.filter(r => r.id !== id);
-            saveReminders();
-            renderReminders();
-        }
-
-        function renderReminders() {
-            const list = document.getElementById('remindersList');
-            const empty = document.getElementById('emptyReminders');
-            list.innerHTML = '';
-
-            if (data.reminders.length === 0) {
-                empty.style.display = 'block';
-                return;
-            }
-            empty.style.display = 'none';
-
-            data.reminders.forEach(reminder => {
-                const li = document.createElement('li');
-                li.className = 'reminder-item';
-                li.innerHTML = `
-                    <h4>${reminder.title}</h4>
-                    <p>${reminder.description}</p>
-                    <div class="reminder-time">⏰ ${new Date(reminder.time).toLocaleString('ar-SA')}</div>
-                    <button class="todo-delete" onclick="deleteReminder(${reminder.id})">حذف</button>
-                `;
-                list.appendChild(li);
+            if (charts.progress) charts.progress.destroy();
+            charts.progress = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['مكتملة', 'قيد الانتظار'],
+                    datasets: [{
+                        label: 'المهام',
+                        data: [completed, pending],
+                        backgroundColor: ['#51cf66', '#ddd']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { font: { family: "'Cairo', sans-serif" } }
+                        }
+                    }
+                }
             });
         }
 
-        function saveReminders() {
-            localStorage.setItem('reminders', JSON.stringify(data.reminders));
+        function updatePomodoroChart() {
+            const ctx = document.getElementById('pomodoroChart');
+            if (!ctx) return;
+
+            if (charts.pomodoro) charts.pomodoro.destroy();
+            charts.pomodoro = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['جلسات اليوم'],
+                    datasets: [{
+                        label: 'جلسات بومودورو',
+                        data: [data.pomodoroStats.todaySession],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { font: { family: "'Cairo', sans-serif" } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateHabitsChart() {
+            const ctx = document.getElementById('habitsChart');
+            if (!ctx) return;
+
+            const habitNames = data.habits.map(h => h.name);
+            const habitStreaks = data.habits.map(h => h.streak);
+
+            if (charts.habits) charts.habits.destroy();
+            charts.habits = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: habitNames.length > 0 ? habitNames : ['لا توجد عادات'],
+                    datasets: [{
+                        label: 'السلسلة المتتالية',
+                        data: habitStreaks.length > 0 ? habitStreaks : [0],
+                        borderColor: '#764ba2',
+                        backgroundColor: 'rgba(118, 75, 162, 0.1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { font: { family: "'Cairo', sans-serif" } }
+                        }
+                    }
+                }
+            });
         }
 
         // Statistics
         function updateStats() {
             const completedTodos = data.todos.filter(t => t.completed).length;
+            const completionRate = data.todos.length > 0 
+                ? Math.round((completedTodos / data.todos.length) * 100) 
+                : 0;
+
             document.getElementById('totalTodos').textContent = data.todos.length;
             document.getElementById('completedTodos').textContent = completedTodos;
             document.getElementById('totalHabits').textContent = data.habits.length;
-            
-            const totalTime = data.timeEntries.reduce((sum, entry) => sum + entry.totalMinutes, 0);
-            const hours = Math.floor(totalTime / 60);
-            const minutes = totalTime % 60;
-            document.getElementById('totalTimeLogged').textContent = `${hours}:${String(minutes).padStart(2, '0')}`;
+            document.getElementById('completionRate').textContent = completionRate + '%';
 
-            updatePerformanceSummary();
-        }
-
-        function updatePerformanceSummary() {
-            const summary = document.getElementById('performanceSummary');
-            const completionRate = data.todos.length > 0 
-                ? Math.round((data.todos.filter(t => t.completed).length / data.todos.length) * 100) 
-                : 0;
-            
             const avgHabitStreak = data.habits.length > 0 
                 ? Math.round(data.habits.reduce((sum, h) => sum + h.streak, 0) / data.habits.length)
                 : 0;
 
-            summary.innerHTML = `
-                <p>📈 معدل إكمال المهام: <strong>${completionRate}%</strong></p>
-                <p>🔥 متوسط سلسلة العادات: <strong>${avgHabitStreak}</strong> أيام</p>
-                <p>⏱️ جلسات بومودورو: <strong>${data.pomodoroStats.sessionsCompleted}</strong></p>
-                <p>⏰ إجمالي الوقت المسجل: <strong>${Math.floor(data.timeEntries.reduce((sum, e) => sum + e.totalMinutes, 0) / 60)} ساعة</strong></p>
-            `;
+            document.getElementById('advCompletionRate').textContent = completionRate + '%';
+            document.getElementById('avgHabitStreak').textContent = avgHabitStreak + ' أيام';
+            document.getElementById('totalSessions').textContent = data.pomodoroStats.sessionsCompleted;
+            document.getElementById('totalHours').textContent = 
+                Math.floor(data.pomodoroStats.totalMinutes / 60) + ' ساعة';
+
+            // Top priority
+            const priorities = {};
+            data.todos.forEach(t => {
+                priorities[t.priority] = (priorities[t.priority] || 0) + 1;
+            });
+            const topPriority = Object.keys(priorities).length > 0 
+                ? Object.keys(priorities).reduce((a, b) => priorities[a] > priorities[b] ? a : b)
+                : '-';
+            document.getElementById('topPriority').textContent = getPriorityText(topPriority);
+
+            document.getElementById('bestDay').textContent = data.pomodoroStats.todaySession > 0 
+                ? 'اليوم' 
+                : '-';
         }
 
         // Initialize
         window.addEventListener('load', () => {
             renderTodos();
             renderHabits();
-            renderTimeEntries();
-            renderReminders();
             updatePomodoroStats();
             updateStats();
         });
 
-        // Keyboard shortcuts
-        document.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const activeTab = document.querySelector('.content.active').id;
-                if (activeTab === 'todos') addTodo();
-                else if (activeTab === 'habits') addHabit();
-                else if (activeTab === 'timetracker') addTimeEntry();
-                else if (activeTab === 'reminders') addReminder();
-            }
-        });
+        // Auto-save
+        setInterval(() => {
+            localStorage.setItem('todos', JSON.stringify(data.todos));
+            localStorage.setItem('habits', JSON.stringify(data.habits));
+            localStorage.setItem('pomodoroStats', JSON.stringify(data.pomodoroStats));
+        }, 5000);
     </script>
 </body>
 </html>
