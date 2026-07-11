@@ -15,17 +15,81 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --bg-light: #f5f7fa;
+            --bg-dark: #1a1a2e;
+            --text-light: #333;
+            --text-dark: #e0e0e0;
+            --card-light: #ffffff;
+            --card-dark: #16213e;
+        }
+
         body {
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
+            color: var(--text-light);
             min-height: 100vh;
             padding: 20px;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        /* Animated Background */
+        .stars-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        body.dark-mode .stars-background {
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 2em;
+            animation: float 6s infinite ease-in-out;
+            pointer-events: none;
+            opacity: 0.6;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         header {
@@ -44,9 +108,56 @@
             margin-bottom: 5px;
         }
 
+        body.dark-mode .header-left h1 {
+            color: #e0e0e0;
+        }
+
         .header-left p {
             color: rgba(255,255,255,0.9);
             font-size: 1em;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-btn {
+            padding: 10px 20px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            background: white;
+            color: #667eea;
         }
 
         .user-profile {
@@ -57,6 +168,11 @@
             align-items: center;
             gap: 15px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        body.dark-mode .user-profile {
+            background: var(--card-dark);
+            color: var(--text-dark);
         }
 
         .user-avatar {
@@ -78,9 +194,28 @@
             margin-bottom: 3px;
         }
 
+        body.dark-mode .user-info h3 {
+            color: var(--text-dark);
+        }
+
         .user-info p {
             color: #999;
             font-size: 0.85em;
+        }
+
+        .logout-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #ff5252;
         }
 
         .nav-tabs {
@@ -114,11 +249,17 @@
         }
 
         .content {
-            background: white;
+            background: var(--card-light);
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             display: none;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .content {
+            background: var(--card-dark);
+            color: var(--text-dark);
         }
 
         .content.active {
@@ -129,6 +270,69 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-screen.hidden {
+            display: none;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+        }
+
+        .login-box h2 {
+            margin-bottom: 30px;
+            color: #667eea;
+        }
+
+        .login-box p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .oauth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .oauth-btn {
+            padding: 15px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .oauth-btn:hover {
+            background: #f9f9f9;
+            border-color: #667eea;
         }
 
         /* Pomodoro Timer */
@@ -142,6 +346,10 @@
             margin: 30px 0;
             font-weight: bold;
             font-family: 'Courier New', monospace;
+        }
+
+        body.dark-mode .timer-display {
+            color: #8b9dff;
         }
 
         .timer-buttons {
@@ -209,6 +417,15 @@
             border-radius: 10px;
             font-size: 1em;
             font-family: 'Cairo', sans-serif;
+            background: var(--card-light);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .todo-input-group input,
+        body.dark-mode .todo-input-group select {
+            background: #2a2a3e;
+            color: var(--text-dark);
+            border-color: #444;
         }
 
         .todo-input-group input {
@@ -244,6 +461,10 @@
             border-radius: 10px;
             margin-bottom: 10px;
             border-right: 4px solid #667eea;
+        }
+
+        body.dark-mode .todo-item {
+            background: #2a2a3e;
         }
 
         .todo-item.high-priority {
@@ -284,6 +505,10 @@
         .todo-priority {
             font-size: 0.8em;
             color: #666;
+        }
+
+        body.dark-mode .todo-priority {
+            color: #aaa;
         }
 
         .todo-delete {
@@ -356,6 +581,14 @@
             border-radius: 10px;
             font-size: 1em;
             font-family: 'Cairo', sans-serif;
+            background: var(--card-light);
+            color: var(--text-light);
+        }
+
+        body.dark-mode .add-habit-form input {
+            background: #2a2a3e;
+            color: var(--text-dark);
+            border-color: #444;
         }
 
         .add-habit-form button {
@@ -384,14 +617,52 @@
             height: 400px;
         }
 
+        body.dark-mode .chart-container {
+            background: #2a2a3e;
+        }
+
         .chart-container h3 {
             margin-bottom: 20px;
             color: #333;
             text-align: center;
         }
 
+        body.dark-mode .chart-container h3 {
+            color: var(--text-dark);
+        }
+
         canvas {
             max-height: 350px;
+        }
+
+        /* AI Suggestions */
+        .ai-suggestions {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .ai-suggestions h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-suggestion-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ai-suggestion-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(-5px);
         }
 
         /* Statistics */
@@ -420,47 +691,27 @@
             opacity: 0.9;
         }
 
-        .advanced-stats {
-            background: #f9f9f9;
+        /* Ads */
+        .ad-container {
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
             padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-        }
-
-        .advanced-stats h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .stat-row:last-child {
-            border-bottom: none;
-        }
-
-        .stat-label {
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
             color: #666;
         }
 
-        .stat-value {
-            font-weight: bold;
-            color: #667eea;
+        body.dark-mode .ad-container {
+            background: #2a2a3e;
+            border-color: #444;
+            color: #aaa;
         }
 
         .empty-state {
             text-align: center;
             padding: 40px 20px;
             color: #999;
-        }
-
-        .empty-state p {
-            font-size: 1.1em;
-            margin-bottom: 10px;
         }
 
         @media (max-width: 768px) {
@@ -492,17 +743,46 @@
     </style>
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="stars-background" id="starsBackground"></div>
+    <div id="floatingEmojis"></div>
+
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <h2>🎯 مركز الإنتاجية</h2>
+            <p>سجل دخولك لبدء رحلة الإنتاجية</p>
+            <div class="oauth-buttons">
+                <button class="oauth-btn" onclick="loginWithGoogle()">
+                    🔵 تسجيل دخول بـ Google
+                </button>
+                <button class="oauth-btn" onclick="loginWithGitHub()">
+                    ⚫ تسجيل دخول بـ GitHub
+                </button>
+                <button class="oauth-btn" onclick="demoLogin()">
+                    👤 تسجيل دخول تجريبي
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <div class="header-left">
                 <h1>🎯 مركز الإنتاجية</h1>
                 <p>أداة شاملة لتنظيم وقتك وزيادة إنتاجيتك</p>
             </div>
-            <div class="user-profile">
-                <div class="user-avatar">جـ</div>
-                <div class="user-info">
-                    <h3>جوهاه Y A</h3>
-                    <p>مستخدم نشط</p>
+            <div class="header-right">
+                <button class="theme-toggle" onclick="toggleDarkMode()">
+                    <span id="themeIcon">🌙</span> وضع الليل
+                </button>
+                <div class="user-profile" id="userProfile" style="display: none;">
+                    <div class="user-avatar" id="userAvatar">جـ</div>
+                    <div class="user-info">
+                        <h3 id="userName">جوهاه Y A</h3>
+                        <p id="userEmail">demo@example.com</p>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
                 </div>
             </div>
         </header>
@@ -518,7 +798,7 @@
         <!-- Pomodoro Timer -->
         <div id="pomodoro" class="content active">
             <div class="timer-container">
-                <h2>مؤقت بومودورو</h2>
+                <h2>⏱️ مؤقت بومودورو</h2>
                 <p style="margin-bottom: 20px; color: #666;">25 دقيقة دراسة + 5 دقائق راحة</p>
                 <div class="timer-display" id="timerDisplay">25:00</div>
                 <div class="timer-buttons">
@@ -541,11 +821,18 @@
                     </div>
                 </div>
             </div>
+            <div class="ad-container">
+                📢 إعلان | ترقية إلى Premium واحصل على ميزات متقدمة!
+            </div>
         </div>
 
         <!-- Todo List -->
         <div id="todos" class="content">
-            <h2>قائمة المهام</h2>
+            <h2>✅ قائمة المهام</h2>
+            <div class="ai-suggestions" id="aiSuggestions" style="display: none;">
+                <h3>🤖 اقتراحات ذكية من AI</h3>
+                <div id="suggestionsList"></div>
+            </div>
             <div class="todo-input-group">
                 <input type="text" id="todoInput" placeholder="أضف مهمة جديدة...">
                 <select id="prioritySelect">
@@ -559,11 +846,14 @@
             <div id="emptyTodos" class="empty-state">
                 <p>لا توجد مهام حالياً. أضف مهمة جديدة!</p>
             </div>
+            <div class="ad-container">
+                📢 إعلان | تطبيق موبايل قريباً!
+            </div>
         </div>
 
         <!-- Habit Tracker -->
         <div id="habits" class="content">
-            <h2>تتبع العادات</h2>
+            <h2>🔄 تتبع العادات</h2>
             <div class="add-habit-form">
                 <input type="text" id="habitInput" placeholder="أضف عادة جديدة...">
                 <button onclick="addHabit()">إضافة عادة</button>
@@ -572,11 +862,14 @@
             <div id="emptyHabits" class="empty-state">
                 <p>لم تضف أي عادات بعد. ابدأ الآن!</p>
             </div>
+            <div class="ad-container">
+                📢 إعلان | اشترك في Premium واحصل على تحليلات متقدمة!
+            </div>
         </div>
 
         <!-- Reports and Charts -->
         <div id="reports" class="content">
-            <h2>التقارير والرسوم البيانية</h2>
+            <h2>📊 التقارير والرسوم البيانية</h2>
             <div class="charts-grid">
                 <div class="chart-container">
                     <h3>توزيع المهام حسب الأولوية</h3>
@@ -595,11 +888,14 @@
                     <canvas id="habitsChart"></canvas>
                 </div>
             </div>
+            <div class="ad-container">
+                📢 إعلان | احصل على تقارير مفصلة مع Premium!
+            </div>
         </div>
 
         <!-- Statistics -->
         <div id="stats" class="content">
-            <h2>الإحصائيات والتقارير الشاملة</h2>
+            <h2>📈 الإحصائيات والتقارير الشاملة</h2>
             <div class="stats-grid">
                 <div class="stats-box">
                     <h3 id="totalTodos">0</h3>
@@ -618,39 +914,105 @@
                     <p>معدل الإكمال</p>
                 </div>
             </div>
-
-            <div class="advanced-stats">
-                <h3>📊 ملخص الأداء المتقدم</h3>
-                <div class="stat-row">
-                    <span class="stat-label">معدل إكمال المهام:</span>
-                    <span class="stat-value" id="advCompletionRate">0%</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">متوسط سلسلة العادات:</span>
-                    <span class="stat-value" id="avgHabitStreak">0</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">إجمالي جلسات بومودورو:</span>
-                    <span class="stat-value" id="totalSessions">0</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">إجمالي ساعات العمل:</span>
-                    <span class="stat-value" id="totalHours">0</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">أفضل يوم إنتاجية:</span>
-                    <span class="stat-value" id="bestDay">-</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">الأولوية الأكثر استخداماً:</span>
-                    <span class="stat-value" id="topPriority">-</span>
-                </div>
+            <div class="ad-container">
+                📢 إعلان | شارك إنجازاتك مع الأصدقاء! (قريباً)
             </div>
         </div>
     </div>
 
     <script>
-        // Data Storage with Cloud Sync
+        // Initialize Background
+        function initializeBackground() {
+            const bg = document.getElementById('starsBackground');
+            const emojisContainer = document.getElementById('floatingEmojis');
+            
+            // Create stars
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                bg.appendChild(star);
+            }
+
+            // Create floating emojis
+            const emojis = ['🚀', '⭐', '💡', '🎯', '✨', '🔥'];
+            for (let i = 0; i < 10; i++) {
+                const emoji = document.createElement('div');
+                emoji.className = 'floating-emoji';
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                emoji.style.left = Math.random() * 100 + '%';
+                emoji.style.top = Math.random() * 100 + '%';
+                emoji.style.animationDelay = Math.random() * 6 + 's';
+                emoji.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                emojisContainer.appendChild(emoji);
+            }
+        }
+
+        // Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').textContent = '☀️';
+        }
+
+        // Authentication
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+
+        function loginWithGoogle() {
+            currentUser = {
+                name: 'جوهاه Y A',
+                email: 'yousfamr642@gmail.com',
+                provider: 'Google'
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showApp();
+        }
+
+        function loginWithGitHub() {
+            currentUser = {
+                name: 'جوهاه Y A',
+                email: 'yousfamr642-debug',
+                provider: 'GitHub'
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showApp();
+        }
+
+        function demoLogin() {
+            currentUser = {
+                name: 'جوهاه Y A',
+                email: 'demo@productivity-hub.com',
+                provider: 'Demo'
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            showApp();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('userProfile').style.display = 'none';
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('userProfile').style.display = 'flex';
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+        }
+
+        // Data Storage
         const data = {
             todos: JSON.parse(localStorage.getItem('todos')) || [],
             habits: JSON.parse(localStorage.getItem('habits')) || [],
@@ -676,7 +1038,30 @@
             if (tabName === 'reports') {
                 setTimeout(updateCharts, 100);
             }
+            if (tabName === 'todos') {
+                generateAISuggestions();
+            }
             updateStats();
+        }
+
+        // AI Suggestions
+        function generateAISuggestions() {
+            const suggestions = [
+                'ركز على المهام ذات الأولوية العالية أولاً',
+                'خذ فترة راحة كل 25 دقيقة',
+                'جرب تقسيم المهام الكبيرة إلى أجزاء صغيرة',
+                'أضف مهام محددة بأوقات معينة',
+                'راجع إنجازاتك اليومية'
+            ];
+            
+            if (data.todos.length > 0) {
+                const container = document.getElementById('aiSuggestions');
+                const list = document.getElementById('suggestionsList');
+                const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+                
+                list.innerHTML = `<div class="ai-suggestion-item">💡 ${randomSuggestion}</div>`;
+                container.style.display = 'block';
+            }
         }
 
         // Pomodoro Timer Functions
@@ -1006,34 +1391,18 @@
             document.getElementById('completedTodos').textContent = completedTodos;
             document.getElementById('totalHabits').textContent = data.habits.length;
             document.getElementById('completionRate').textContent = completionRate + '%';
-
-            const avgHabitStreak = data.habits.length > 0 
-                ? Math.round(data.habits.reduce((sum, h) => sum + h.streak, 0) / data.habits.length)
-                : 0;
-
-            document.getElementById('advCompletionRate').textContent = completionRate + '%';
-            document.getElementById('avgHabitStreak').textContent = avgHabitStreak + ' أيام';
-            document.getElementById('totalSessions').textContent = data.pomodoroStats.sessionsCompleted;
-            document.getElementById('totalHours').textContent = 
-                Math.floor(data.pomodoroStats.totalMinutes / 60) + ' ساعة';
-
-            // Top priority
-            const priorities = {};
-            data.todos.forEach(t => {
-                priorities[t.priority] = (priorities[t.priority] || 0) + 1;
-            });
-            const topPriority = Object.keys(priorities).length > 0 
-                ? Object.keys(priorities).reduce((a, b) => priorities[a] > priorities[b] ? a : b)
-                : '-';
-            document.getElementById('topPriority').textContent = getPriorityText(topPriority);
-
-            document.getElementById('bestDay').textContent = data.pomodoroStats.todaySession > 0 
-                ? 'اليوم' 
-                : '-';
         }
 
         // Initialize
         window.addEventListener('load', () => {
+            initializeBackground();
+            
+            if (currentUser) {
+                showApp();
+            } else {
+                document.getElementById('loginScreen').classList.remove('hidden');
+            }
+            
             renderTodos();
             renderHabits();
             updatePomodoroStats();
