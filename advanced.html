@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز الإنتاجية المتقدم - Productivity Hub Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #51cf66;
+            --warning: #ffa500;
+            --danger: #ff6b6b;
+            --bg-light: #f5f7fa;
+            --bg-dark: #1a1a2e;
+            --text-light: #333;
+            --text-dark: #e0e0e0;
+            --card-light: #ffffff;
+            --card-dark: #16213e;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .stars-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        body.dark-mode .stars-background {
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        header h1 {
+            color: white;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-tabs button {
+            padding: 12px 24px;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs button.active {
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .content {
+            background: var(--card-light);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .content {
+            background: var(--card-dark);
+            color: var(--text-dark);
+        }
+
+        .content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* AI Recommendations */
+        .ai-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .ai-panel h3 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3em;
+        }
+
+        .recommendation {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(-5px);
+        }
+
+        .recommendation-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .recommendation-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        /* Calendar Integration */
+        .calendar-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        body.dark-mode .calendar-section {
+            background: #2a2a3e;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        body.dark-mode .calendar-day {
+            background: #3a3a4e;
+        }
+
+        .calendar-day:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .calendar-day.today {
+            background: #667eea;
+            color: white;
+        }
+
+        .calendar-day.has-tasks {
+            border: 2px solid #51cf66;
+        }
+
+        /* Email Notifications */
+        .email-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .email-settings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .email-setting {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .email-setting label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .email-setting input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .email-setting input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* API Documentation */
+        .api-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        body.dark-mode .api-section {
+            background: #2a2a3e;
+        }
+
+        .api-endpoint {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        body.dark-mode .api-endpoint {
+            background: #3a3a4e;
+        }
+
+        .api-method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            margin-right: 10px;
+            color: white;
+        }
+
+        .api-method.get {
+            background: #51cf66;
+        }
+
+        .api-method.post {
+            background: #667eea;
+        }
+
+        .api-method.put {
+            background: #ffa500;
+        }
+
+        .api-method.delete {
+            background: #ff6b6b;
+        }
+
+        /* Task Automation */
+        .automation-section {
+            background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .automation-rule {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .rule-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .rule-input input,
+        .rule-input select {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Cairo', sans-serif;
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .rule-input input::placeholder,
+        .rule-input select {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .rule-input button {
+            padding: 10px 20px;
+            background: white;
+            color: #51cf66;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .rule-input button:hover {
+            transform: scale(1.05);
+        }
+
+        .automation-list {
+            list-style: none;
+        }
+
+        .automation-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .automation-item button {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .automation-item button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Stats Dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tabs button {
+                width: 100%;
+            }
+
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars-background" id="starsBackground"></div>
+
+    <div class="container">
+        <header>
+            <h1>🚀 مركز الإنتاجية المتقدم</h1>
+            <div class="header-right">
+                <button class="theme-toggle" onclick="toggleDarkMode()">
+                    <span id="themeIcon">🌙</span> وضع الليل
+                </button>
+            </div>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('ai')">🤖 توصيات AI</button>
+            <button class="tab-btn" onclick="switchTab('calendar')">📅 التقويم</button>
+            <button class="tab-btn" onclick="switchTab('email')">💌 البريد الإلكتروني</button>
+            <button class="tab-btn" onclick="switchTab('automation')">⚙️ الأتمتة</button>
+            <button class="tab-btn" onclick="switchTab('api')">🔗 API</button>
+            <button class="tab-btn" onclick="switchTab('stats')">📊 الإحصائيات</button>
+        </div>
+
+        <!-- AI Recommendations -->
+        <div id="ai" class="content active">
+            <div class="ai-panel">
+                <h3>🤖 توصيات ذكية من AI</h3>
+                <p style="margin-bottom: 20px;">AI يحلل أنماط عملك ويقترح أفضل أوقات الإنتاجية</p>
+                <div id="aiRecommendations"></div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="bestTime">10:00 AM</h3>
+                    <p>أفضل وقت للعمل</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="productivity">85%</h3>
+                    <p>مستوى الإنتاجية</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="focusHours">6.5</h3>
+                    <p>ساعات التركيز اليومية</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Integration -->
+        <div id="calendar" class="content">
+            <h2>📅 تكامل Google Calendar</h2>
+            <button onclick="connectGoogleCalendar()" style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 10px; cursor: pointer; font-family: 'Cairo', sans-serif; margin-bottom: 20px;">
+                🔗 ربط مع Google Calendar
+            </button>
+            
+            <div class="calendar-section">
+                <div class="calendar-header">
+                    <button onclick="previousMonth()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">◀</button>
+                    <h3 id="monthYear">يوليو 2026</h3>
+                    <button onclick="nextMonth()" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">▶</button>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 20px; background: #f9f9f9; border-radius: 10px;">
+                <h3>📝 المهام المجدولة</h3>
+                <ul id="scheduledTasks" style="list-style: none; margin-top: 15px;"></ul>
+            </div>
+        </div>
+
+        <!-- Email Notifications -->
+        <div id="email" class="content">
+            <div class="email-section">
+                <h2>💌 إرسال تذكيرات بالبريد الإلكتروني</h2>
+                <p style="margin-bottom: 20px;">استقبل تذكيرات يومية عن مهامك وعاداتك</p>
+                
+                <div class="email-settings">
+                    <div class="email-setting">
+                        <label>
+                            <input type="checkbox" id="dailyReminder" checked>
+                            تذكير يومي
+                        </label>
+                        <p style="font-size: 0.9em; opacity: 0.9;">تلقي ملخص يومي عن مهامك</p>
+                    </div>
+
+                    <div class="email-setting">
+                        <label>
+                            <input type="checkbox" id="weeklyReport" checked>
+                            تقرير أسبوعي
+                        </label>
+                        <p style="font-size: 0.9em; opacity: 0.9;">تقرير شامل عن إنتاجيتك</p>
+                    </div>
+
+                    <div class="email-setting">
+                        <label>
+                            <input type="checkbox" id="habitReminder" checked>
+                            تذكير العادات
+                        </label>
+                        <p style="font-size: 0.9em; opacity: 0.9;">تذكيرات عن العادات المهمة</p>
+                    </div>
+
+                    <div class="email-setting">
+                        <label>
+                            <input type="checkbox" id="motivational" checked>
+                            رسائل تحفيزية
+                        </label>
+                        <p style="font-size: 0.9em; opacity: 0.9;">رسائل تحفيزية يومية</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <label style="display: block; margin-bottom: 10px; font-weight: 600;">بريدك الإلكتروني:</label>
+                    <input type="email" id="emailInput" placeholder="your@email.com" style="width: 100%; padding: 12px; border: none; border-radius: 5px; font-family: 'Cairo', sans-serif;">
+                </div>
+
+                <button onclick="saveEmailSettings()" style="margin-top: 20px; padding: 12px 30px; background: white; color: #51cf66; border: none; border-radius: 5px; cursor: pointer; font-family: 'Cairo', sans-serif; font-weight: 600;">
+                    💾 حفظ الإعدادات
+                </button>
+            </div>
+        </div>
+
+        <!-- Task Automation -->
+        <div id="automation" class="content">
+            <div class="automation-section">
+                <h2>⚙️ أتمتة المهام</h2>
+                <p style="margin-bottom: 20px;">أنشئ قواعد تلقائية لتنظيم مهامك</p>
+
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3 style="margin-bottom: 15px;">➕ إضافة قاعدة جديدة</h3>
+                    <div class="rule-input">
+                        <select id="triggerType" style="flex: 1; min-width: 150px;">
+                            <option value="complete">عند إكمال مهمة</option>
+                            <option value="create">عند إنشاء مهمة</option>
+                            <option value="time">في وقت محدد</option>
+                            <option value="habit">عند إكمال عادة</option>
+                        </select>
+                        <input type="text" id="actionText" placeholder="الإجراء (مثال: أضف مهمة جديدة)" style="flex: 1; min-width: 200px;">
+                        <button onclick="addAutomationRule()">إضافة</button>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 15px;">📋 القواعس المفعلة:</h3>
+                <ul class="automation-list" id="automationRules"></ul>
+            </div>
+        </div>
+
+        <!-- API Documentation -->
+        <div id="api" class="content">
+            <h2>🔗 API العام</h2>
+            <p style="margin-bottom: 20px; color: #666;">استخدم هذه الواجهات البرمجية لربط تطبيقاتك الخاصة</p>
+
+            <div class="api-section">
+                <h3 style="margin-bottom: 15px;">📌 نقاط النهاية (Endpoints)</h3>
+
+                <div class="api-endpoint">
+                    <span class="api-method get">GET</span>
+                    <code>/api/v1/todos</code>
+                    <p style="margin-top: 10px; color: #666;">الحصول على جميع المهام</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="api-method post">POST</span>
+                    <code>/api/v1/todos</code>
+                    <p style="margin-top: 10px; color: #666;">إنشاء مهمة جديدة</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="api-method put">PUT</span>
+                    <code>/api/v1/todos/:id</code>
+                    <p style="margin-top: 10px; color: #666;">تحديث مهمة</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="api-method delete">DELETE</span>
+                    <code>/api/v1/todos/:id</code>
+                    <p style="margin-top: 10px; color: #666;">حذف مهمة</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="api-method get">GET</span>
+                    <code>/api/v1/habits</code>
+                    <p style="margin-top: 10px; color: #666;">الحصول على جميع العادات</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <span class="api-method get">GET</span>
+                    <code>/api/v1/stats</code>
+                    <p style="margin-top: 10px; color: #666;">الحصول على الإحصائيات</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; padding: 20px; background: #f9f9f9; border-radius: 10px;">
+                <h3 style="margin-bottom: 15px;">🔑 مفتاح API</h3>
+                <input type="text" id="apiKey" value="pk_live_abc123xyz789" readonly style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-family: 'Courier New', monospace; background: white;">
+                <button onclick="copyApiKey()" style="margin-top: 10px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-family: 'Cairo', sans-serif;">
+                    📋 نسخ المفتاح
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div id="stats" class="content">
+            <h2>📊 لوحة الإحصائيات</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="totalTodos">0</h3>
+                    <p>إجمالي المهام</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="completedTodos">0</h3>
+                    <p>المهام المكتملة</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalHabits">0</h3>
+                    <p>إجمالي العادات</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="completionRate">0%</h3>
+                    <p>معدل الإكمال</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="avgProductivity">0%</h3>
+                    <p>متوسط الإنتاجية</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="streakDays">0</h3>
+                    <p>أيام السلسلة المتتالية</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Background
+        function initializeBackground() {
+            const bg = document.getElementById('starsBackground');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                bg.appendChild(star);
+            }
+        }
+
+        // Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').textContent = '☀️';
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // AI Recommendations
+        function generateAIRecommendations() {
+            const recommendations = [
+                {
+                    title: '⏰ أفضل وقت للعمل',
+                    desc: 'بناءً على بيانات أنماطك، أفضل وقت للعمل هو من 10:00 صباحاً إلى 12:00 ظهراً'
+                },
+                {
+                    title: '🎯 ركز على الأولويات',
+                    desc: 'لديك 3 مهام عالية الأولوية. ركز عليها أولاً قبل المهام الأخرى'
+                },
+                {
+                    title: '⚡ خذ فترات راحة',
+                    desc: 'لقد عملت لمدة 3 ساعات. خذ فترة راحة 15 دقيقة لتحسين الإنتاجية'
+                },
+                {
+                    title: '📈 أنت في مسار جيد',
+                    desc: 'معدل إكمالك للمهام 85%. استمر في هذا المستوى الرائع!'
+                },
+                {
+                    title: '🔥 عادة قوية',
+                    desc: 'سلسلتك المتتالية وصلت إلى 15 يوم. احتفل بهذا الإنجاز!'
+                }
+            ];
+
+            const container = document.getElementById('aiRecommendations');
+            container.innerHTML = recommendations.map(rec => `
+                <div class="recommendation">
+                    <div class="recommendation-title">${rec.title}</div>
+                    <div class="recommendation-desc">${rec.desc}</div>
+                </div>
+            `).join('');
+        }
+
+        // Calendar Functions
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        function renderCalendar() {
+            const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+                              'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+            
+            document.getElementById('monthYear').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            for (let i = 0; i < firstDay; i++) {
+                const empty = document.createElement('div');
+                grid.appendChild(empty);
+            }
+
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+                dayEl.textContent = day;
+
+                if (day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
+                    dayEl.classList.add('today');
+                }
+
+                if (Math.random() > 0.7) {
+                    dayEl.classList.add('has-tasks');
+                }
+
+                grid.appendChild(dayEl);
+            }
+        }
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        function connectGoogleCalendar() {
+            alert('🔗 سيتم توجيهك لربط Google Calendar...\n\nفي النسخة الحقيقية، ستتم إعادة التوجيه إلى Google OAuth');
+        }
+
+        // Email Settings
+        function saveEmailSettings() {
+            const settings = {
+                email: document.getElementById('emailInput').value,
+                dailyReminder: document.getElementById('dailyReminder').checked,
+                weeklyReport: document.getElementById('weeklyReport').checked,
+                habitReminder: document.getElementById('habitReminder').checked,
+                motivational: document.getElementById('motivational').checked
+            };
+            localStorage.setItem('emailSettings', JSON.stringify(settings));
+            alert('✅ تم حفظ إعدادات البريد الإلكتروني بنجاح!');
+        }
+
+        // Automation Rules
+        let automationRules = JSON.parse(localStorage.getItem('automationRules')) || [];
+
+        function addAutomationRule() {
+            const trigger = document.getElementById('triggerType').value;
+            const action = document.getElementById('actionText').value;
+
+            if (action.trim()) {
+                automationRules.push({ trigger, action, id: Date.now() });
+                localStorage.setItem('automationRules', JSON.stringify(automationRules));
+                renderAutomationRules();
+                document.getElementById('actionText').value = '';
+            }
+        }
+
+        function deleteAutomationRule(id) {
+            automationRules = automationRules.filter(r => r.id !== id);
+            localStorage.setItem('automationRules', JSON.stringify(automationRules));
+            renderAutomationRules();
+        }
+
+        function renderAutomationRules() {
+            const list = document.getElementById('automationRules');
+            list.innerHTML = automationRules.map(rule => `
+                <li class="automation-item">
+                    <div>
+                        <strong>${rule.trigger === 'complete' ? '✓' : rule.trigger === 'create' ? '➕' : rule.trigger === 'time' ? '⏰' : '🔄'}</strong>
+                        ${rule.action}
+                    </div>
+                    <button onclick="deleteAutomationRule(${rule.id})">حذف</button>
+                </li>
+            `).join('');
+        }
+
+        // API Key
+        function copyApiKey() {
+            const apiKey = document.getElementById('apiKey');
+            apiKey.select();
+            document.execCommand('copy');
+            alert('✅ تم نسخ مفتاح API!');
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            initializeBackground();
+            generateAIRecommendations();
+            renderCalendar();
+            renderAutomationRules();
+        });
+    </script>
+</body>
+</html>
